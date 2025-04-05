@@ -25,7 +25,7 @@ app = Flask(__name__)
 # Configure CORS
 CORS(app, resources={
     r"/generate": {
-        "origins": ["*"],  # In production, replace with your frontend URL
+        "origins": ["https://aws-diagram-generator-frontend.vercel.app"],  # Update with your frontend URL
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }

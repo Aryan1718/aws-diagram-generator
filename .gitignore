@@ -38,3 +38,4 @@ coverage/
 .DS_Store
 *.bak
 *.tmp 
+.vercel
