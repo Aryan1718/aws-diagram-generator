@@ -100,24 +100,6 @@ The frontend will run on `http://localhost:3000`
 - "Show a serverless architecture with Lambda, API Gateway, and DynamoDB"
 - "Design a VPC with public and private subnets, NAT Gateway, and EC2 instances"
 
-## Deployment
-
-### Option 1: Render (Recommended)
-
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Set environment variables:
-   - `GOOGLE_API_KEY`
-   - `PYTHON_VERSION=3.9.0`
-4. Deploy!
-
-### Option 2: Railway
-
-1. Create a new project on Railway
-2. Connect your GitHub repository
-3. Set environment variables
-4. Deploy!
-
 ## Project Structure
 
 ```
