@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Architecture Diagram Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .chat-container {
+            height: calc(100vh - 200px);
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">AWS Architecture Diagram Generator</h1>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="chat-container overflow-y-auto mb-4" id="chatContainer">
+                <div class="space-y-4" id="chatMessages">
+                    <!-- Messages will be added here -->
+                </div>
+            </div>
+            
+            <div class="flex space-x-4">
+                <input type="text" 
+                       id="userInput" 
+                       class="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Describe your AWS architecture...">
+                <button onclick="sendMessage()" 
+                        class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Generate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatContainer = document.getElementById('chatContainer');
+            
+            if (!userInput.value.trim()) return;
+            
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'bg-blue-100 p-4 rounded-lg';
+            userMessage.textContent = userInput.value;
+            chatMessages.appendChild(userMessage);
+            
+            // Add loading message
+            const loadingMessage = document.createElement('div');
+            loadingMessage.className = 'bg-gray-100 p-4 rounded-lg';
+            loadingMessage.textContent = 'Generating XML...';
+            chatMessages.appendChild(loadingMessage);
+            
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: userInput.value }),
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    loadingMessage.textContent = `Error: ${data.error}`;
+                    return;
+                }
+                
+                // Remove loading message
+                loadingMessage.remove();
+                
+                // Add XML response
+                const xmlContainer = document.createElement('div');
+                xmlContainer.className = 'bg-white p-4 rounded-lg shadow';
+                
+                const xmlTitle = document.createElement('h3');
+                xmlTitle.className = 'font-bold mb-2';
+                xmlTitle.textContent = 'Generated draw.io XML:';
+                xmlContainer.appendChild(xmlTitle);
+                
+                const xmlContent = document.createElement('pre');
+                xmlContent.className = 'bg-gray-50 p-4 rounded text-sm overflow-x-auto';
+                xmlContent.textContent = data.xml;
+                xmlContainer.appendChild(xmlContent);
+                
+                chatMessages.appendChild(xmlContainer);
+                
+                // Clear input
+                userInput.value = '';
+                
+            } catch (error) {
+                loadingMessage.textContent = `Error: ${error.message}`;
+            }
+            
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Handle Enter key
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html> 
